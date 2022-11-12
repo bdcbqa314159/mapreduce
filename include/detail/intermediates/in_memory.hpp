@@ -257,23 +257,22 @@ class in_memory : detail::noncopyable
     }
 
     template<typename T>
-    bool const insert(T const &key, typename reduce_task_type::value_type const &value)
+    bool const insert(T const &key, const typename reduce_task_type::value_type &value)
     {
         return insert(make_intermediate_key<key_type>(key), value);
     }
 
     // receive final result
-    template<typename StoreResult>
-    bool const insert(typename reduce_task_type::key_type   const &key,
-                      typename reduce_task_type::value_type const &value,
+    bool const insert(const typename reduce_task_type::key_type   &key,
+                      const typename reduce_task_type::value_type &value,
                       StoreResult &store_result)
     {
         return store_result(key, value)  &&  insert(key, value);
     }
 
     // receive intermediate result
-    bool const insert(typename key_type                     const &key,
-                      typename reduce_task_type::value_type const &value)
+    bool const insert(const key_type                     &key,
+                      const typename reduce_task_type::value_type &value)
     {
         size_t const  partition = (num_partitions_ == 1)? 0 : partitioner_(key, num_partitions_);
         auto         &map       = intermediates_[partition];

@@ -15,6 +15,14 @@ struct null_combiner;
 
 namespace detail {
 
+	template<typename T> uintmax_t    const length(T const &str);
+
+template<>
+inline uintmax_t const length(std::string const &str)
+{
+    return str.length();
+}
+
 struct file_lines_comp
 {
     template<typename T>
@@ -481,17 +489,17 @@ class local_disk : detail::noncopyable
 
     // receive final result
     template<typename StoreResult>
-    bool const insert(typename reduce_task_type::key_type   const &key,
-                      typename reduce_task_type::value_type const &value,
-                      StoreResult                                 &store_result)
+    bool const insert(typename reduce_task_type::key_type   &key,
+                      typename reduce_task_type::value_type &value,
+                      StoreResult                           &store_result)
     {
         store_result(key, value);
         return true;
     }
 
     // receive intermediate result
-    bool const insert(typename key_type                     const &key,
-                      typename reduce_task_type::value_type const &value)
+    bool const insert(key_type                     &key,
+                      typename reduce_task_type::value_type &value)
     {
         size_t const partition = partitioner_(key, num_partitions_);
 
